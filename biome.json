@@ -27,8 +27,9 @@
       "indentWidth": 2,
       "lineWidth": 100,
       "quoteStyle": "single",
-      "trailingCommas": "es5",
       "semicolons": "asNeeded",
+      "trailingCommas": "es5",
+      "arrowParentheses": "asNeeded",
       "jsxQuoteStyle": "double"
     }
   },
