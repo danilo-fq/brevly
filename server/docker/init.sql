@@ -1,0 +1,1 @@
+CREATE DATABASE "shorturl_test";

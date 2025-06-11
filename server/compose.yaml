@@ -1,0 +1,15 @@
+services:
+  db:
+    image: bitnami/postgresql
+    container_name: postgres_db
+    environment:
+      - POSTGRESQL_USERNAME=$POSTGRESQL_USERNAME
+      - POSTGRESQL_PASSWORD=$POSTGRESQL_PASSWORD
+      - POSTGRESQL_DATABASE=$POSTGRESQL_DATABASE
+    ports:
+      - "$POSTGRESQL_PORT:$POSTGRESQL_PORT"
+    volumes:
+      - './docker:/docker-entrypoint-initdb.d'
+      - 'db:/bitnami/postgresql'
+volumes:
+  db:
