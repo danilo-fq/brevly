@@ -7,32 +7,36 @@ import {
 	serializerCompiler,
 	validatorCompiler,
 } from 'fastify-type-provider-zod'
+import { urlRoutes } from '../routes/create-shortened-url'
 
 export const app = fastify()
+
+app.setValidatorCompiler(validatorCompiler)
+app.setSerializerCompiler(serializerCompiler)
 
 app.register(fastifyCors, {
 	origin: '*',
 })
 
-app.setValidatorCompiler(validatorCompiler)
-app.setSerializerCompiler(serializerCompiler)
-
 app.register(fastifySwagger, {
-	swagger: {
+	openapi: {
 		info: {
 			title: 'Brev.ly API',
 			description: 'Brev.ly API documentation',
 			version: '1.0.0',
 		},
 	},
+
 	transform: jsonSchemaTransform,
 })
 
-app.get('/spec.json', () => app.swagger())
+app.register(urlRoutes)
+
+app.get('/openapi.json', () => app.swagger())
 
 app.register(scalarUi, {
 	routePrefix: '/docs',
 	configuration: {
-		url: '/spec.json',
+		url: '/openapi.json',
 	},
 })
