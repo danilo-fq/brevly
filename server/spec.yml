@@ -1,0 +1,79 @@
+openapi: 3.1.0
+
+info:
+  title: Brev.ly API
+  version: 1.0.0
+
+paths:
+  /urls:
+    post:
+      summary: Create a Shortened URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UrlInput'
+      responses:
+        '201':
+          description: URL shortened successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Url'
+        '409':
+          description: Short code already exists.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: URL encurtada já existe.
+
+components:
+  schemas:
+    UrlInput:
+      type: object
+      required:
+        - originalUrl
+        - shortCode
+      properties:
+        originalUrl:
+          type: string
+          format: uri
+        shortCode:
+          type: string
+          minLength: 4
+          maxLength: 10
+          pattern: '^[a-z0-9-]+$'
+    Url:
+      type: object
+      required:
+        - id
+        - originalUrl
+        - shortCode
+        - countViews
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        originalUrl:
+          type: string
+          format: uri
+        shortCode:
+          type: string
+          minLength: 4
+          maxLength: 10
+          pattern: '^[a-z0-9-]+$'
+        countViews:
+          type: integer
+          minimum: 0
+          default: 0
+        createdAt:
+          type: string
+          format: date-time
+        
+    
