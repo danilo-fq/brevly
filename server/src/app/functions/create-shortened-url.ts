@@ -6,7 +6,11 @@ import { getShortenedUrlByName } from './get-shortened-url-by-name'
 
 const createShortenedUrlInputSchema = z.object({
 	originalUrl: z.url(),
-	shortCodeUrl: z.string().min(4).max(10),
+	shortCodeUrl: z
+		.string()
+		.min(4)
+		.max(10)
+		.regex(/^[a-z0-9-]+$/),
 })
 
 type CreateShortenedUrlParams = z.input<typeof createShortenedUrlInputSchema>

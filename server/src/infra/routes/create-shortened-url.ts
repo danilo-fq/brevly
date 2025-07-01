@@ -1,5 +1,7 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod/v4'
+import { ShortenedUrlAlreadyExistsError } from '../../app/errors/shortened-url-already-exists-error'
+import { createShortenedUrl } from '../../app/functions/create-shortened-url'
 
 export const urlRoutes: FastifyPluginAsyncZod = async app => {
 	app.post(
@@ -11,7 +13,7 @@ export const urlRoutes: FastifyPluginAsyncZod = async app => {
 					originalUrl: z
 						.url('URL original deve ser uma URL válida.')
 						.describe('The original URL to be shortened'),
-					shortCode: z
+					shortCodeUrl: z
 						.string()
 						.min(4, 'URL encurtada deve ter no mínimo 4 caracteres.')
 						.max(10, 'URL encurtada deve ter no máximo 10 caracteres.')
@@ -25,7 +27,7 @@ export const urlRoutes: FastifyPluginAsyncZod = async app => {
 					201: z
 						.object({
 							id: z.uuid().describe('The unique identifier for the shortened URL'),
-							shortCode: z.string().describe('Short code used to create the shortened URL'),
+							shortCodeUrl: z.string().describe('Short code used to create the shortened URL'),
 							originalUrl: z.url().describe('The original URL that was shortened'),
 							countViews: z
 								.number()
@@ -46,13 +48,18 @@ export const urlRoutes: FastifyPluginAsyncZod = async app => {
 			},
 		},
 		async (req, reply) => {
-			return {
-				id: '123e4567-e89b-12d3-a456-426614174000',
-				shortCode: 'abc123',
-				originalUrl: 'https://example.com',
-				countViews: 0,
-				createdAt: new Date().toISOString(),
+			const { originalUrl, shortCodeUrl } = req.body
+
+			const newShortenedUrl = await createShortenedUrl({ originalUrl, shortCodeUrl })
+
+			if (newShortenedUrl instanceof ShortenedUrlAlreadyExistsError) {
+				return reply.status(newShortenedUrl.statusCode).send({ message: newShortenedUrl.message })
 			}
+
+			return reply.status(201).send({
+				...newShortenedUrl,
+				createdAt: newShortenedUrl.createdAt.toISOString(),
+			})
 		}
 	)
 }

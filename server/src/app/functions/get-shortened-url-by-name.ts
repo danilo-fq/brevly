@@ -1,7 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { db } from '../../infra/db'
 import { schema } from '../../infra/db/schemas'
-import { NotFoundShortenedUrlError } from '../errors/not-found-shortened-url-error'
 
 type GetUrlOutput = {
 	id: string
@@ -11,9 +10,7 @@ type GetUrlOutput = {
 	createdAt: Date
 }
 
-export async function getShortenedUrlByName(
-	shortCode: string
-): Promise<GetUrlOutput | NotFoundShortenedUrlError> {
+export async function getShortenedUrlByName(shortCode: string): Promise<GetUrlOutput | undefined> {
 	const shortenedUrl = await db.query.urls.findFirst({
 		where: eq(schema.urls.shortCodeUrl, shortCode),
 		columns: {
@@ -24,10 +21,6 @@ export async function getShortenedUrlByName(
 			createdAt: true,
 		},
 	})
-
-	if (!shortenedUrl) {
-		throw new NotFoundShortenedUrlError()
-	}
 
 	return shortenedUrl
 }
