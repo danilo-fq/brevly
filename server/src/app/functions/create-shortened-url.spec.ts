@@ -32,7 +32,7 @@ describe('create shortened url', () => {
 		)
 	})
 
-	it.only('should not allow short code with upercase letters and specials characters', async () => {
+	it('should not allow short code with upercase letters and specials characters', async () => {
 		await expect(() =>
 			createShortenedUrl({
 				originalUrl: 'https://google.com',
