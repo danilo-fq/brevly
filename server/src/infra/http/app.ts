@@ -7,7 +7,7 @@ import {
 	serializerCompiler,
 	validatorCompiler,
 } from 'fastify-type-provider-zod'
-import { urlRoutes } from '../routes/create-shortened-url'
+import { createUrlRoute } from '../routes/create-shortened-url'
 
 export const app = fastify()
 
@@ -30,7 +30,7 @@ app.register(fastifySwagger, {
 	transform: jsonSchemaTransform,
 })
 
-app.register(urlRoutes)
+app.register(createUrlRoute)
 
 app.get('/openapi.json', () => app.swagger())
 

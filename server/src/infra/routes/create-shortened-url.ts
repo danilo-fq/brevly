@@ -3,7 +3,7 @@ import { z } from 'zod/v4'
 import { ShortenedUrlAlreadyExistsError } from '../../app/errors/shortened-url-already-exists-error'
 import { createShortenedUrl } from '../../app/functions/create-shortened-url'
 
-export const urlRoutes: FastifyPluginAsyncZod = async app => {
+export const createUrlRoute: FastifyPluginAsyncZod = async app => {
 	app.post(
 		'/urls',
 		{
