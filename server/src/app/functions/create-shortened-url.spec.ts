@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import { eq } from 'drizzle-orm'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it } from 'vitest'
 import { ZodError } from 'zod/v4'
 import { db } from '../../infra/db'
 import { schema } from '../../infra/db/schemas'
