@@ -1,7 +1,6 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod/v4'
 import { NotFoundShortenedUrlError } from '../../app/errors/not-found-shortened-url-error'
-import { ShortenedUrlAlreadyExistsError } from '../../app/errors/shortened-url-already-exists-error'
 import { deleteShortenedUrl } from '../../app/functions/delete-shortened-url'
 
 export const deleteShortenedUrlRoute: FastifyPluginAsyncZod = async app => {
