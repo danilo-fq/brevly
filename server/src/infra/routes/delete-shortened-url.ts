@@ -12,22 +12,24 @@ export const deleteShortenedUrlRoute: FastifyPluginAsyncZod = async app => {
 				params: z.object({
 					shortCodeUrl: z
 						.string()
-						.min(4, 'URL encurtada deve ter no mínimo 4 caracteres.')
-						.max(10, 'URL encurtada deve ter no máximo 10 caracteres.')
-						.regex(
-							/^[a-z0-9-]+$/,
-							'URL encurtada deve conter apenas letras minúsculas, números e hífen.'
-						)
+						.min(4, { error: 'URL encurtada deve ter no mínimo 4 caracteres.' })
+						.max(10, { error: 'URL encurtada deve ter no máximo 10 caracteres.' })
+						.regex(/^[a-z0-9-]+$/, {
+							error: 'URL encurtada deve conter apenas letras minúsculas, números e hífen.',
+						})
 						.describe('The unique short code for the shortened URL'),
 				}),
-				response: {
-					204: {
-						description: 'Shortened URL deleted successfully',
-					},
 
-					404: z.object({
-						message: z.string().describe('No shortened URL was found for the provided short code'),
-					}),
+				response: {
+					200: z.null().describe('Shortened URL successfully deleted'),
+
+					404: z
+						.object({
+							message: z
+								.string()
+								.describe('No shortened URL was found for the provided short code'),
+						})
+						.describe('Error when trying to delete a shortened URL that does not exist'),
 				},
 			},
 		},
@@ -37,7 +39,7 @@ export const deleteShortenedUrlRoute: FastifyPluginAsyncZod = async app => {
 
 				await deleteShortenedUrl(shortCodeUrl)
 
-				return reply.status(204).send()
+				return reply.status(200).send(null)
 			} catch (error) {
 				if (error instanceof NotFoundShortenedUrlError) {
 					return reply.status(error.statusCode).send({ message: error.message })

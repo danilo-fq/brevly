@@ -9,20 +9,26 @@ export const createUrlRoute: FastifyPluginAsyncZod = async app => {
 		{
 			schema: {
 				summary: 'Create a shortened URL',
-				body: z.object({
-					originalUrl: z
-						.url('URL original deve ser uma URL válida.')
-						.describe('The original URL to be shortened'),
-					shortCodeUrl: z
-						.string()
-						.min(4, 'URL encurtada deve ter no mínimo 4 caracteres.')
-						.max(10, 'URL encurtada deve ter no máximo 10 caracteres.')
-						.regex(
-							/^[a-z0-9-]+$/,
-							'URL encurtada deve conter apenas letras minúsculas, números e hífen.'
-						)
-						.describe('The unique short code for the shortened URL'),
-				}),
+				body: z
+					.object({
+						originalUrl: z
+							.url({ error: 'URL original deve ser uma URL válida.' })
+							.describe('The original URL to be shortened'),
+						shortCodeUrl: z
+							.string()
+							.min(4, { error: 'URL encurtada deve ter no mínimo 4 caracteres.' })
+							.max(10, { error: 'URL encurtada deve ter no máximo 10 caracteres.' })
+							.regex(/^[a-z0-9-]+$/, {
+								error: 'URL encurtada deve conter apenas letras minúsculas, números e hífen.',
+							})
+							.describe('The unique short code for the shortened URL'),
+					})
+					.meta({
+						example: {
+							originalUrl: 'https://example.com',
+							shortCodeUrl: 'abc123',
+						},
+					}),
 				response: {
 					201: z
 						.object({
@@ -31,11 +37,10 @@ export const createUrlRoute: FastifyPluginAsyncZod = async app => {
 							originalUrl: z.url().describe('The original URL that was shortened'),
 							countViews: z
 								.number()
-								.int()
 								.nonnegative()
 								.default(0)
 								.describe('Number of times the shortened URL has been accessed'),
-							createdAt: z.iso.datetime().describe('Timestamp when the shortened URL was created'),
+							createdAt: z.date().describe('Timestamp when the shortened URL was created'),
 						})
 						.describe('Shortened URL created.'),
 
@@ -56,10 +61,7 @@ export const createUrlRoute: FastifyPluginAsyncZod = async app => {
 				return reply.status(newShortenedUrl.statusCode).send({ message: newShortenedUrl.message })
 			}
 
-			return reply.status(201).send({
-				...newShortenedUrl,
-				createdAt: newShortenedUrl.createdAt.toISOString(),
-			})
+			return reply.status(201).send(newShortenedUrl)
 		}
 	)
 }
