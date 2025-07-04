@@ -9,6 +9,7 @@ import {
 } from 'fastify-type-provider-zod'
 import { createUrlRoute } from '../routes/create-shortened-url'
 import { deleteShortenedUrlRoute } from '../routes/delete-shortened-url'
+import { getAllShortenedUrlRoute } from '../routes/get-all-shortened-urls'
 import { getOriginalUrlRoute } from '../routes/get-original-url'
 
 export const app = fastify()
@@ -35,6 +36,7 @@ app.register(fastifySwagger, {
 app.register(createUrlRoute)
 app.register(deleteShortenedUrlRoute)
 app.register(getOriginalUrlRoute)
+app.register(getAllShortenedUrlRoute)
 
 app.get('/openapi.json', () => app.swagger())
 
