@@ -1,4 +1,17 @@
 services:
+  app:
+    build: .
+    container_name: brevly_server
+    ports: 
+      - "$PORT:$PORT"
+    environment:
+      - CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID
+      - CLOUDFLARE_ACCESS_KEY_ID=$CLOUDFLARE_ACCESS_KEY_ID
+      - CLOUDFLARE_SECRET_ACCESS_KEY=$CLOUDFLARE_SECRET_ACCESS_KEY
+      - CLOUDFLARE_BUCKET=$CLOUDFLARE_BUCKET
+      - CLOUDFLARE_PUBLIC_URL=$CLOUDFLARE_PUBLIC_URL
+    depends_on:
+      - db
   db:
     image: bitnami/postgresql
     container_name: postgres_db
