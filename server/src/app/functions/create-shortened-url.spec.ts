@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { eq } from 'drizzle-orm'
-import { afterAll, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { ZodError } from 'zod/v4'
 import { db } from '../../infra/db'
 import { schema } from '../../infra/db/schemas'
@@ -10,9 +9,10 @@ import { createShortenedUrl } from './create-shortened-url'
 const INVALID_NAME_PATTERN = 'Inv@lId_13'
 
 describe('create shortened url', () => {
-	afterAll(async () => {
-		await db.delete(schema.urls).where(eq(schema.urls.shortCodeUrl, INVALID_NAME_PATTERN))
+	beforeEach(async () => {
+		await db.delete(schema.urls)
 	})
+
 	it('should be able to create a shortened url', async () => {
 		const namePattern = randomUUID().slice(0, 10)
 
@@ -42,14 +42,14 @@ describe('create shortened url', () => {
 	})
 
 	it('should not duplicate short code', async () => {
-		const namePattern = randomUUID().slice(0, 10)
+		const namePattern = 'same-name'
 
 		await createShortenedUrl({
 			originalUrl: 'https://google.com',
 			shortCodeUrl: namePattern,
 		})
 
-		await expect(() =>
+		await expect(
 			createShortenedUrl({
 				originalUrl: 'https://google.com',
 				shortCodeUrl: namePattern,

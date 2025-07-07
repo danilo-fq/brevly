@@ -1,10 +1,16 @@
 import { randomUUID } from 'node:crypto'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { db } from '../../infra/db'
+import { schema } from '../../infra/db/schemas'
 import { NotFoundShortenedUrlError } from '../errors/not-found-shortened-url-error'
 import { createShortenedUrl } from './create-shortened-url'
 import { getOriginalUrl } from './get-original-url'
 
 describe('Get Original URL', () => {
+	beforeEach(async () => {
+		await db.delete(schema.urls)
+	})
+
 	it('should be able to get an existing original URL', async () => {
 		const namePattern = randomUUID().slice(0, 10)
 

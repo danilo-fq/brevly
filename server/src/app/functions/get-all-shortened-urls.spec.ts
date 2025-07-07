@@ -1,11 +1,11 @@
-import { beforeAll, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { db } from '../../infra/db'
 import { schema } from '../../infra/db/schemas'
 import { createShortenedUrl } from './create-shortened-url'
 import { getAllShortenedUrls } from './get-all-shortened-urls'
 
 describe('Get all shortened URLs', () => {
-	beforeAll(async () => {
+	beforeEach(async () => {
 		await db.delete(schema.urls)
 	})
 
