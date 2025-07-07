@@ -3,6 +3,7 @@ import { fastifySwagger } from '@fastify/swagger'
 import scalarUi from '@scalar/fastify-api-reference'
 import { fastify } from 'fastify'
 import {
+	hasZodFastifySchemaValidationErrors,
 	jsonSchemaTransform,
 	serializerCompiler,
 	validatorCompiler,
@@ -11,6 +12,7 @@ import { createUrlRoute } from '../routes/create-shortened-url'
 import { deleteShortenedUrlRoute } from '../routes/delete-shortened-url'
 import { getAllShortenedUrlRoute } from '../routes/get-all-shortened-urls'
 import { getOriginalUrlRoute } from '../routes/get-original-url'
+import { getReportUrlRoute } from '../routes/get-report-url'
 
 export const app = fastify()
 
@@ -37,6 +39,7 @@ app.register(createUrlRoute)
 app.register(deleteShortenedUrlRoute)
 app.register(getOriginalUrlRoute)
 app.register(getAllShortenedUrlRoute)
+app.register(getReportUrlRoute)
 
 app.get('/openapi.json', () => app.swagger())
 
@@ -45,4 +48,16 @@ app.register(scalarUi, {
 	configuration: {
 		url: '/openapi.json',
 	},
+})
+
+app.setErrorHandler((error, _request, reply) => {
+	if (hasZodFastifySchemaValidationErrors(error)) {
+    return reply.status(400).send({
+      message: 'Validation errror',
+      issues: error.message,
+    })
+  }
+
+	console.error(error)
+  return reply.status(500).send({ message: 'Server Internal Error' })
 })
