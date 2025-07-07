@@ -15,7 +15,7 @@ const createShortenedUrlInputSchema = z.object({
 
 type CreateShortenedUrlParams = z.input<typeof createShortenedUrlInputSchema>
 
-type CreateShortenedUrlOutput = {
+export type CreateShortenedUrlOutput = {
 	id: string
 	originalUrl: string
 	shortCodeUrl: string
