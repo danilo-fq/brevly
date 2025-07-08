@@ -2,8 +2,6 @@ FROM node:22-alpine3.22 AS base
 
 RUN npm i -g pnpm
 
-RUN apk add --no-cache postgresql-client
-
 FROM base AS dependencies
 
 WORKDIR /usr/src/app
@@ -30,7 +28,6 @@ WORKDIR /usr/src/app
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/package.json ./package.json
-
 
 EXPOSE 3333
 
