@@ -17,8 +17,8 @@
     "db:migrate:test": "dotenv -e .env.test -- drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:studio:test": "dotenv -e .env.test -- drizzle-kit studio",
-    "build": "tsup src --format esm",
-    "start": "node dist/server.js"
+    "build": "tsup-node",
+    "start": "node --watch --env-file .env dist/infra/http/server.js"
   },
   "keywords": [],
   "author": "",

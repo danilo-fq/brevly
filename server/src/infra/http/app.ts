@@ -14,7 +14,9 @@ import { getAllShortenedUrlRoute } from '../routes/get-all-shortened-urls'
 import { getOriginalUrlRoute } from '../routes/get-original-url'
 import { getReportUrlRoute } from '../routes/get-report-url'
 
-export const app = fastify()
+export const app = fastify({
+	logger: true,
+})
 
 app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
@@ -52,12 +54,12 @@ app.register(scalarUi, {
 
 app.setErrorHandler((error, _request, reply) => {
 	if (hasZodFastifySchemaValidationErrors(error)) {
-    return reply.status(400).send({
-      message: 'Validation errror',
-      issues: error.message,
-    })
-  }
+		return reply.status(400).send({
+			message: 'Validation errror',
+			issues: error.message,
+		})
+	}
 
 	console.error(error)
-  return reply.status(500).send({ message: 'Server Internal Error' })
+	return reply.status(500).send({ message: 'Server Internal Error' })
 })

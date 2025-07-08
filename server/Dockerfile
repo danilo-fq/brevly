@@ -2,6 +2,8 @@ FROM node:22-alpine3.22 AS base
 
 RUN npm i -g pnpm
 
+RUN apk add --no-cache postgresql-client
+
 FROM base AS dependencies
 
 WORKDIR /usr/src/app
@@ -18,16 +20,18 @@ COPY . .
 
 COPY --from=dependencies /usr/src/app/node_modules ./node_modules
 
-RUN pnpm build
+RUN pnpm run build
 RUN pnpm prune --prod
 
 FROM base AS deploy
 
 WORKDIR /usr/src/app
+
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/package.json ./package.json
 
+
 EXPOSE 3333
 
-CMD ["node", "./dist/server.js"]
+CMD ["node", "./dist/infra/http/server.js"]
