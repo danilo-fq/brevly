@@ -1,10 +1,13 @@
+import { Route, Routes } from 'react-router'
 import { Homepage } from './pages/Homepage'
+import { Redirect } from './pages/Redirect'
 
 function App() {
 	return (
-		<main className="flex h-dvh lg:items-center lg:justify-center">
-			<Homepage />
-		</main>
+		<Routes>
+			<Route path="/" element={<Homepage />} />
+			<Route path=":shortCode" element={<Redirect />} />
+		</Routes>
 	)
 }
 
