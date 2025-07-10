@@ -2,7 +2,7 @@ import { DownloadSimpleIcon, LinkIcon } from '@phosphor-icons/react'
 
 export function MyShortenedUrlsDashboard() {
 	return (
-		<div className="bg-white flex flex-col gap-4 justify-center p-6 rounded-lg w-full">
+		<div className="bg-gray-100 flex flex-col gap-4 h-fit justify-center lg:justify-start lg:p-8 lg:w-[36.25rem] p-6 rounded-lg w-full">
 			<header className="flex justify-between items-center">
 				<h2 className="text-lg text-gray-600">Meus Links</h2>
 				<button
