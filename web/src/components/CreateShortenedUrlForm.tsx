@@ -28,7 +28,7 @@ export function CreateShortenedUrlForm() {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
+		formState: { errors, dirtyFields },
 	} = useForm<CreateShortenedUrlData>({
 		resolver: zodResolver(CreateShortenedUrlSchema),
 		defaultValues: {
@@ -89,8 +89,8 @@ export function CreateShortenedUrlForm() {
 					)}
 				</label>
 				<input
-					className="bg-blue-base disabled:bg-blue-base/50 hover:bg-blue-dark h-12 rounded-lg text-md text-white"
-					disabled={false}
+					className="bg-blue-base not-disabled:cursor-pointer disabled:bg-blue-base/50 hover:bg-blue-dark h-12 rounded-lg text-md text-white"
+					disabled={!(dirtyFields.originalUrl && dirtyFields.shortCodeUrl)}
 					type="submit"
 					value="Salvar link"
 				/>
