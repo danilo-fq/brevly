@@ -1,6 +1,26 @@
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router'
 import brevLogo from '/brevly-favicon.svg'
+import { getOriginalUrl } from '../http/get-original-url'
 
 export function Redirect() {
+	const { shortCodeUrl } = useParams<{ shortCodeUrl: string }>()
+	const [originalUrlHref, setOriginalUrlHref] = useState('')
+
+	useEffect(() => {
+		const fetchApi = async () => {
+			if (shortCodeUrl) {
+				const { originalUrl } = await getOriginalUrl(shortCodeUrl)
+
+				setOriginalUrlHref(originalUrl)
+
+				window.location.href = originalUrl
+			}
+		}
+
+		setTimeout(fetchApi, 3000)
+	}, [shortCodeUrl])
+
 	return (
 		<main className="flex h-dvh items-center justify-center px-3">
 			<section className="bg-white flex flex-col gap-6 h-fit items-center rounded-lg px-5 py-12">
@@ -12,7 +32,7 @@ export function Redirect() {
 					Não foi redirecionado?{' '}
 					<a
 						className="text-blue-base underline"
-						href="http://"
+						href={originalUrlHref}
 						target="_blank"
 						rel="noopener noreferrer"
 					>

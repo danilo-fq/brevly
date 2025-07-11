@@ -1,7 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { WarningIcon } from '@phosphor-icons/react'
 import { type SubmitHandler, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod/v4'
+import { createShortenedUrl } from '../http/create-shortened-url'
+import type { ShortenedUrl } from '../pages/Homepage'
 
 const CreateShortenedUrlSchema = z.object({
 	originalUrl: z.url({ error: 'Informa uma URL válida.' }),
@@ -14,17 +17,13 @@ const CreateShortenedUrlSchema = z.object({
 		}),
 })
 
+type CreateShortenedUrlFormProps = {
+	createUrl: (data: ShortenedUrl) => void
+}
+
 type CreateShortenedUrlData = z.infer<typeof CreateShortenedUrlSchema>
 
-// type ShortenedUrl = {
-// 	id: string
-// 	originalUrl: string
-// 	shortCodeUrl: string
-// 	countViews: number
-// 	createdAt: Date
-// }
-
-export function CreateShortenedUrlForm() {
+export function CreateShortenedUrlForm({ createUrl }: CreateShortenedUrlFormProps) {
 	const {
 		register,
 		handleSubmit,
@@ -37,14 +36,39 @@ export function CreateShortenedUrlForm() {
 		},
 	})
 
-	const createShortenedUrl: SubmitHandler<CreateShortenedUrlData> = data => {
-		console.log(data)
+	const createUrlHandler: SubmitHandler<CreateShortenedUrlData> = async data => {
+		try {
+			const response = await createShortenedUrl(data)
+
+			if (response !== undefined) {
+				const { id, originalUrl, shortCodeUrl, countViews, createdAt } = response
+				console.log({
+					id,
+					originalUrl,
+					shortCodeUrl,
+					countViews,
+					createdAt,
+				})
+
+				createUrl({
+					id,
+					originalUrl,
+					shortCodeUrl,
+					countViews,
+					createdAt,
+				})
+			}
+		} catch (_error) {
+			toast.error('Erro no cadastro', {
+				description: 'Essa URL encurtada já existe.',
+			})
+		}
 	}
 
 	return (
-		<div className="bg-gray-100 flex justify-center lg:w-96 flex-col p-6 rounded-lg w-full">
+		<div className="bg-gray-100 flex justify-center lg:w-96 flex-col max-h-80 p-6 rounded-lg w-full">
 			<h2 className="text-lg text-gray-600">Novo link</h2>
-			<form className="flex flex-col gap-4 py-5" onSubmit={handleSubmit(createShortenedUrl)}>
+			<form className="flex flex-col gap-4 py-5" onSubmit={handleSubmit(createUrlHandler)}>
 				<label
 					className="focus-within:text-blue-base focus-within:font-bold text-gray-500 text-xs data-[error=true]:text-danger data-[error=true]:font-bold"
 					htmlFor="original-url"
