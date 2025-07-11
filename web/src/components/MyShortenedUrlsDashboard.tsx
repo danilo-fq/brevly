@@ -1,5 +1,6 @@
 import { Box, LinearProgress } from '@mui/material'
 import { DownloadSimpleIcon, LinkIcon, SpinnerIcon } from '@phosphor-icons/react'
+import { createReport } from '../http/create-report'
 import type { ShortenedUrl } from '../pages/Homepage'
 import { ShortenedUrlItem } from './ShortenedUrlItem'
 
@@ -14,9 +15,16 @@ export function MyShortenedUrlsDashboard({
 	isLoading,
 	deleteUrl,
 }: MyShortenedUrlsDashboardProps) {
+	const createReportCsv = async () => {
+		console.log('chama a função?')
+		const { url } = await createReport()
+		console.log('quem é url?', url)
+		window.location.href = url
+	}
+
 	if (isLoading) {
 		return (
-			<div className="bg-gray-100 flex flex-col gap-4 h-fit justify-center lg:justify-start lg:p-8 lg:w-[36.25rem] overflow-hidden p-6 relative rounded-lg w-full">
+			<div className="bg-gray-100 flex flex-col gap-4 h-fit justify-center lg:justify-start lg:p-8 lg:w-[36.25rem] p-6 relative rounded-lg w-full">
 				<Box sx={{ width: '100%' }} className="bg-gray-100 h-1 left-0 absolute top-[0.4px] w-full">
 					<LinearProgress className="bg-blue-base h-1 w-full indeterminate:bg-blue-base" />
 				</Box>
@@ -26,7 +34,6 @@ export function MyShortenedUrlsDashboard({
 						className="bg-gray-200 cursor-pointer disabled:cursor-auto disabled:bg-gray-200/50 disabled:text-gray-500/50 font-[620] flex gap-x-1.5 hover:bg-gray-300 items-center justify-between p-2 rounded-sm text-gray-500 text-sm"
 						type="button"
 						disabled={Boolean(urls.length === 0)}
-						onClick={() => console.log('chamada para a API dos relatorios')}
 					>
 						<DownloadSimpleIcon weight="bold" size={16} />
 						Baixar CSV
@@ -53,7 +60,7 @@ export function MyShortenedUrlsDashboard({
 					className="bg-gray-200 cursor-pointer disabled:cursor-auto disabled:bg-gray-200/50 disabled:text-gray-500/50 font-[620] flex gap-x-1.5 hover:bg-gray-300 items-center justify-between p-2 rounded-sm text-gray-500 text-sm"
 					type="button"
 					disabled={Boolean(urls.length === 0)}
-					onClick={() => console.log('chamada para a API dos relatorios')}
+					onClick={() => createReportCsv()}
 				>
 					<DownloadSimpleIcon weight="bold" size={16} />
 					Baixar CSV
@@ -61,7 +68,7 @@ export function MyShortenedUrlsDashboard({
 			</header>
 			<hr className="h-[1px] border-gray-200" />
 			<div
-				className={`flex flex-col gap-y-3 items-center justify-center ${urls.length > 0 ? 'divide-y-[1.5px]' : 'divide-y-0'} divide-gray-200 overflow-y-scroll scrollbar scrollbar-thumb-rounded-full scrollbar-thumb-blue-base scrollbar-track-transparent`}
+				className={`flex flex-col gap-y-3 ${urls.length > 0 ? 'divide-y-[1.5px]' : 'divide-y-0'} divide-gray-200 overflow-y-scroll scrollbar scrollbar-thumb-rounded-full scrollbar-thumb-blue-base scrollbar-track-transparent`}
 			>
 				{urls.length ? (
 					urls.map(url => (
