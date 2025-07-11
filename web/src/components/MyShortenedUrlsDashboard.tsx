@@ -46,7 +46,7 @@ export function MyShortenedUrlsDashboard({
 	}
 
 	return (
-		<div className="bg-gray-100 flex flex-col gap-4 h-fit justify-center lg:justify-start lg:p-8 lg:w-[36.25rem] p-6 rounded-lg w-full">
+		<div className="bg-gray-100 flex flex-col gap-4 h-fit justify-center lg:justify-start lg:p-8 lg:w-[36.25rem] lg:max-h-[32.6875rem] not-sm:max-h-[30rem] p-6 rounded-lg w-full">
 			<header className="flex justify-between items-center">
 				<h2 className="text-lg text-gray-600">Meus Links</h2>
 				<button
@@ -61,7 +61,7 @@ export function MyShortenedUrlsDashboard({
 			</header>
 			<hr className="h-[1px] border-gray-200" />
 			<div
-				className={`flex flex-col gap-y-3 items-center justify-center ${urls.length > 0 ? 'divide-y-[1.5px]' : 'divide-y-0'} divide-gray-200`}
+				className={`flex flex-col gap-y-3 items-center justify-center ${urls.length > 0 ? 'divide-y-[1.5px]' : 'divide-y-0'} divide-gray-200 overflow-y-scroll scrollbar scrollbar-thumb-rounded-full scrollbar-thumb-blue-base scrollbar-track-transparent`}
 			>
 				{urls.length ? (
 					urls.map(url => (
