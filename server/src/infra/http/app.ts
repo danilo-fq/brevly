@@ -23,6 +23,7 @@ app.setSerializerCompiler(serializerCompiler)
 
 app.register(fastifyCors, {
 	origin: '*',
+	methods: ['GET', 'POST', 'DELETE'],
 })
 
 app.register(fastifySwagger, {
@@ -58,6 +59,10 @@ app.setErrorHandler((error, _request, reply) => {
 			message: 'Validation errror',
 			issues: error.message,
 		})
+	}
+
+	if (error.statusCode) {
+		return reply.status(error.statusCode).send({ message: error.message })
 	}
 
 	console.error(error)
