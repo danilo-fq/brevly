@@ -66,7 +66,7 @@ export function CreateShortenedUrlForm({ createUrl }: CreateShortenedUrlFormProp
 	}
 
 	return (
-		<div className="bg-gray-100 flex justify-center lg:w-96 flex-col p-6 rounded-lg w-full">
+		<div className="bg-gray-100 flex justify-center lg:w-96 flex-col max-h-80 p-6 rounded-lg w-full">
 			<h2 className="text-lg text-gray-600">Novo link</h2>
 			<form className="flex flex-col gap-4 py-5" onSubmit={handleSubmit(createUrlHandler)}>
 				<label
