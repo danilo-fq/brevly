@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
 import { useParams } from 'react-router'
 import brevLogo from '/brevly-favicon.svg'
 import { getOriginalUrl } from '../http/get-original-url'
@@ -7,19 +8,26 @@ export function Redirect() {
 	const { shortCodeUrl } = useParams<{ shortCodeUrl: string }>()
 	const [originalUrlHref, setOriginalUrlHref] = useState('')
 
-	useEffect(() => {
-		const fetchApi = async () => {
-			if (shortCodeUrl) {
-				const { originalUrl } = await getOriginalUrl(shortCodeUrl)
+	const queryClient = useQueryClient()
 
-				setOriginalUrlHref(originalUrl)
+	useQuery({
+		queryKey: ['redirect-url'],
+		queryFn: () => {
+			setTimeout(async () => {
+				if (shortCodeUrl) {
+					const { originalUrl } = await getOriginalUrl(shortCodeUrl)
 
-				window.location.href = originalUrl
-			}
-		}
+					setOriginalUrlHref(originalUrl)
 
-		setTimeout(fetchApi, 3000)
-	}, [shortCodeUrl])
+					queryClient.invalidateQueries({
+						queryKey: ['get-all-urls'],
+					})
+
+					window.location.href = originalUrl
+				}
+			}, 3000)
+		},
+	})
 
 	return (
 		<main className="flex h-dvh items-center justify-center px-3">

@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import BrevlyLogo from '/brevly-logo.svg'
 import { CreateShortenedUrlForm } from '../components/CreateShortenedUrlForm'
 import { MyShortenedUrlsDashboard } from '../components/MyShortenedUrlsDashboard'
+import { type CreateShortenedUrlParams, createShortenedUrl } from '../http/create-shortened-url'
+import { deleteShortenedUrl } from '../http/delete-shortened-url'
 import { getAllShortenedUrl } from '../http/get-all-shortened-urls'
 
 export type ShortenedUrl = {
@@ -13,28 +15,30 @@ export type ShortenedUrl = {
 }
 
 export function Homepage() {
-	const [shortenedUrls, setShortenedUrl] = useState<ShortenedUrl[]>([])
-	const [isLoading, setIsLoading] = useState(true)
+	const queryClient = useQueryClient()
 
-	const createNewShortenedUrl = (data: ShortenedUrl): void => {
-		setShortenedUrl([data, ...shortenedUrls])
-	}
+	const { data, isLoading } = useQuery({
+		queryKey: ['get-all-urls'],
+		queryFn: getAllShortenedUrl,
+	})
 
-	const deleteShortenedUrl = (shortCodeUrl: string): void => {
-		const filteredUrls = shortenedUrls.filter(url => url.shortCodeUrl !== shortCodeUrl)
-		setShortenedUrl(filteredUrls)
-	}
+	const { mutateAsync: createNewShortenedUrl } = useMutation({
+		mutationFn: async (data: CreateShortenedUrlParams) => await createShortenedUrl(data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['get-all-urls'],
+			})
+		},
+	})
 
-	useEffect(() => {
-		const fetchUrls = async () => {
-			const data = await getAllShortenedUrl()
-
-			setShortenedUrl(data.shortenedUrls)
-			setIsLoading(false)
-		}
-
-		fetchUrls()
-	}, [])
+	const { mutateAsync: deleteShortenedUrlHandler } = useMutation({
+		mutationFn: async (shortCodeUrl: string) => await deleteShortenedUrl(shortCodeUrl),
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['get-all-urls'],
+			})
+		},
+	})
 
 	return (
 		<main className="flex h-dvh lg:items-center lg:justify-center">
@@ -42,12 +46,13 @@ export function Homepage() {
 				<img className="box-border lg:pb-8 pb-3 w-24" src={BrevlyLogo} alt="Brevly logo" />
 				<div className="flex lg:gap-x-5 lg:justify-center not-sm:flex-col not-sm:gap-y-3 not-sm:w-full">
 					<CreateShortenedUrlForm createUrl={createNewShortenedUrl} />
-
-					<MyShortenedUrlsDashboard
-						urls={shortenedUrls}
-						isLoading={isLoading}
-						deleteUrl={deleteShortenedUrl}
-					/>
+					{data?.shortenedUrls && (
+						<MyShortenedUrlsDashboard
+							urls={data.shortenedUrls}
+							isLoading={isLoading}
+							deleteUrl={deleteShortenedUrlHandler}
+						/>
+					)}
 				</div>
 			</section>
 		</main>

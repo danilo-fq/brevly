@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import type { ShortenedUrl } from '../pages/Homepage'
 
-interface CreateShortenedUrlParams {
+export interface CreateShortenedUrlParams {
 	originalUrl: string
 	shortCodeUrl: string
 }
