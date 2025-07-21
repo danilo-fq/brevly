@@ -3,7 +3,7 @@ import { Homepage } from './pages/Homepage'
 import { NotFound } from './pages/NotFound'
 import { Redirect } from './pages/Redirect'
 
-function App() {
+export function App() {
 	return (
 		<Routes>
 			<Route path="/" element={<Homepage />} />
@@ -12,5 +12,3 @@ function App() {
 		</Routes>
 	)
 }
-
-export default App
