@@ -16,9 +16,8 @@ export function MyShortenedUrlsDashboard({
 	deleteUrl,
 }: MyShortenedUrlsDashboardProps) {
 	const createReportCsv = async () => {
-		console.log('chama a função?')
 		const { url } = await createReport()
-		console.log('quem é url?', url)
+
 		window.location.href = url
 	}
 

@@ -42,13 +42,6 @@ export function CreateShortenedUrlForm({ createUrl }: CreateShortenedUrlFormProp
 
 			if (response !== undefined) {
 				const { id, originalUrl, shortCodeUrl, countViews, createdAt } = response
-				console.log({
-					id,
-					originalUrl,
-					shortCodeUrl,
-					countViews,
-					createdAt,
-				})
 
 				createUrl({
 					id,
